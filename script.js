@@ -104,6 +104,14 @@ btnLogin.addEventListener('click', function (evt) {
 		labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
 		containerApp.style.opacity = 100;
 
+		inputLoginUsername.value = '';
+		inputLoginPin.value = '';
+
+		// if we login via Enter after entering the username, pin
+		// then the focus and the cursor stays on the input fields
+		inputLoginUsername.blur();
+		inputLoginPin.blur();
+
 		displayMovements(currentAccount.movements);
 		calcDisplayBalance(currentAccount.movements);
 		calcDisplaySummary(currentAccount.movements);
