@@ -114,7 +114,10 @@ btnLogin.addEventListener('click', function (evt) {
 
 		displayMovements(currentAccount.movements);
 		calcDisplayBalance(currentAccount.movements);
-		calcDisplaySummary(currentAccount.movements);
+
+		// we pass the movements array and interestRate value
+		// Jonas passed the complete currentAccount
+		calcDisplaySummary(currentAccount.movements, currentAccount.interestRate);
 	}
 });
 
@@ -148,7 +151,7 @@ const calcDisplayBalance = function (movements) {
 
 // =====================================================================
 
-const calcDisplaySummary = function (movements) {
+const calcDisplaySummary = function (movements, interestRate) {
 	const balIn = movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
 	labelSumIn.textContent = `${balIn} €`;
 
@@ -159,7 +162,7 @@ const calcDisplaySummary = function (movements) {
 	// Interest assumption 1
 	// assume 1.2% interest on each deposit
 
-	// const rate = 0.012;
+	// const rate = interestRate / 100;
 	// const balInterest = movements
 	// 	.filter(mov => mov > 0)
 	// 	.reduce((bal, mov) => bal + rate * mov, 0);
@@ -169,7 +172,7 @@ const calcDisplaySummary = function (movements) {
 	// Interest assumption 2
 	// assume 1.2% interest on each deposit where minimum interest value is 1 €
 
-	const rate = 0.012;
+	const rate = interestRate / 100;
 
 	// Solution 1
 	// const balInterest = movements
