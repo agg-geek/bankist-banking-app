@@ -73,7 +73,7 @@ const displayMovements = function (movements) {
         <div class="movements__row">
             <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
             <!-- <div class="movements__date">3 days ago</div> -->
-            <div class="movements__value">${mov}</div>
+            <div class="movements__value">${mov} €</div>
         </div>`;
 
 		// notice insertAdjacentHTML and not insertAdjacentElement
@@ -83,16 +83,57 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements);
 
-// ===============================
+// =====================================================================
 
 const calcDisplayBalance = function (movements) {
 	const balance = movements.reduce((bal, mov) => bal + mov, 0);
-	labelBalance.textContent = `${balance} EUR`;
+	labelBalance.textContent = `${balance} €`;
 };
 
 calcDisplayBalance(account1.movements);
 
-// ===============================
+// =====================================================================
+
+const calcDisplaySummary = function (movements) {
+	const balIn = movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
+	labelSumIn.textContent = `${balIn} €`;
+
+	const balOut = movements.filter(mov => mov < 0).reduce((bal, mov) => bal + mov, 0);
+	labelSumOut.textContent = `${Math.abs(balOut)} €`;
+
+	// ===============================
+	// Interest assumption 1
+	// assume 1.2% interest on each deposit
+
+	// const rate = 0.012;
+	// const balInterest = movements
+	// 	.filter(mov => mov > 0)
+	// 	.reduce((bal, mov) => bal + rate * mov, 0);
+	// labelSumInterest.textContent = `${balInterest} €`;
+
+	// ===============================
+	// Interest assumption 2
+	// assume 1.2% interest on each deposit where minimum interest value is 1 €
+
+	const rate = 0.012;
+
+	// Solution 1
+	// const balInterest = movements
+	// 	.filter(mov => mov > 0)
+	// 	.map(mov => mov * rate)
+	// 	.filter(int => int >= 1)
+	// 	.reduce((acc, cur) => acc + cur, 0);
+
+	// Solution 2
+	const balInterest = movements
+		.filter(mov => mov > 0)
+		.reduce((bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0), 0);
+	labelSumInterest.textContent = `${balInterest} €`;
+};
+
+calcDisplaySummary(account1.movements);
+
+// =====================================================================
 
 const createUsernames = function (accs) {
 	accs.forEach(acc => {
