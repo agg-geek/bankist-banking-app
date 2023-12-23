@@ -72,10 +72,16 @@ const createUsernames = function (accs) {
 	});
 };
 
+const updateUI = function (acc) {
+	displayMovements(acc.movements);
+	// as we add the account balance property to the obj itself
+	// we need the balance to be directly available for other things
+	calcDisplayBalance(acc);
+	calcDisplaySummary(acc);
+};
+
 createUsernames(accounts);
 // console.log(account1);
-
-// =====================================================================
 
 // store the currentAccount
 let currentAccount = undefined;
@@ -112,15 +118,37 @@ btnLogin.addEventListener('click', function (evt) {
 		inputLoginUsername.blur();
 		inputLoginPin.blur();
 
-		displayMovements(currentAccount.movements);
-		// as we add the account balance property to the obj itself
-		// we need the balance to be directly available for other things
-		calcDisplayBalance(currentAccount);
-		calcDisplaySummary(currentAccount);
+		updateUI(currentAccount);
 	}
 });
 
-// =====================================================================
+btnTransfer.addEventListener('click', function (evt) {
+	evt.preventDefault();
+
+	const amount = Number(inputTransferAmount.value);
+	const receiverAccount = accounts.find(acc => acc.username === inputTransferTo.value);
+
+	// notice that we first check if the receiverAccount exists
+	// we cannot use ?. because
+	// for currentAccount.owner !== receiverAccount?.owner
+	// if receiverAccount does not exist, (currentAccount.owner !== undefined) is true
+	if (
+		receiverAccount &&
+		amount > 0 &&
+		amount < currentAccount.balance &&
+		currentAccount.owner !== receiverAccount.owner
+	) {
+		console.log('Transfer successful.');
+
+		currentAccount.movements.push(-amount);
+		transferAccount.movements.push(amount);
+
+		updateUI(currentAccount);
+	}
+
+	inputTransferTo.value = '';
+	inputTransferAmount.value = '';
+});
 
 const displayMovements = function (movements) {
 	// reset the container first
@@ -141,15 +169,11 @@ const displayMovements = function (movements) {
 	});
 };
 
-// =====================================================================
-
 const calcDisplayBalance = function (acc) {
 	// add the balance property to the account obj itself
 	acc.balance = acc.movements.reduce((bal, mov) => bal + mov, 0);
 	labelBalance.textContent = `${acc.balance} €`;
 };
-
-// =====================================================================
 
 const calcDisplaySummary = function (acc) {
 	const balIn = acc.movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
