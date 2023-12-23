@@ -150,6 +150,27 @@ btnTransfer.addEventListener('click', function (evt) {
 	inputTransferAmount.value = '';
 });
 
+btnClose.addEventListener('click', function (evt) {
+	evt.preventDefault();
+
+	if (
+		inputCloseUsername.value === currentAccount.username &&
+		Number(inputClosePin.value) === currentAccount.pin
+	) {
+		const idx = accounts.findIndex(acc => acc.username === currentAccount.username);
+
+		// findIndex returns -1 if the account is not found
+		// so splice will end up deleting the -1th elem, ie the last account
+		idx >= 0 && accounts.splice(idx, 1);
+		currentAccount = undefined;
+
+		containerApp.style.opacity = 0;
+	}
+
+	inputCloseUsername.value = '';
+	inputClosePin.value = '';
+});
+
 const displayMovements = function (movements) {
 	// reset the container first
 	containerMovements.innerHTML = '';
