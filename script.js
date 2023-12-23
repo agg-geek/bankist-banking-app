@@ -168,11 +168,14 @@ btnClose.addEventListener('click', function (evt) {
 
 		currentAccount = undefined;
 
+		labelWelcome.textContent = 'Account closed!';
 		containerApp.style.opacity = 0;
 	}
 
 	inputCloseUsername.value = '';
 	inputClosePin.value = '';
+	inputCloseUsername.blur();
+	inputClosePin.blur();
 });
 
 const displayMovements = function (movements) {
