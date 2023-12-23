@@ -62,6 +62,56 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 // =====================================================================
 
+const createUsernames = function (accs) {
+	accs.forEach(acc => {
+		acc.username = acc.owner
+			.split(' ')
+			.map(str => str[0])
+			.join('')
+			.toLowerCase();
+	});
+};
+
+createUsernames(accounts);
+// console.log(account1);
+
+// =====================================================================
+
+// store the currentAccount
+let currentAccount = undefined;
+
+// notice that the login stuff is a form
+// inputLoginUsername, inputLoginPin are form inputs
+// btnLogin is the submit button of the form
+// whenever you click on the button, the form is submitted
+// the form also gets submitted when you press Enter
+// when any form input is active
+// you will see the below console.log() when you do any of the above
+// as all above inputs call below event listener
+// even though it is applied on just btnLogin
+btnLogin.addEventListener('click', function (evt) {
+	// To prevent submission of form which refreshes the page
+	evt.preventDefault();
+
+	// console.log('Clicked on button / Pressed Enter in input fields');
+	const username = inputLoginUsername.value;
+	const pin = inputLoginPin.value;
+
+	currentAccount = accounts.find(acc => acc.username === username);
+
+	// notice ?.
+	if (currentAccount?.pin == pin) {
+		labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
+		containerApp.style.opacity = 100;
+
+		displayMovements(currentAccount.movements);
+		calcDisplayBalance(currentAccount.movements);
+		calcDisplaySummary(currentAccount.movements);
+	}
+});
+
+// =====================================================================
+
 const displayMovements = function (movements) {
 	// reset the container first
 	containerMovements.innerHTML = '';
@@ -81,16 +131,12 @@ const displayMovements = function (movements) {
 	});
 };
 
-displayMovements(account1.movements);
-
 // =====================================================================
 
 const calcDisplayBalance = function (movements) {
 	const balance = movements.reduce((bal, mov) => bal + mov, 0);
 	labelBalance.textContent = `${balance} €`;
 };
-
-calcDisplayBalance(account1.movements);
 
 // =====================================================================
 
@@ -130,20 +176,3 @@ const calcDisplaySummary = function (movements) {
 		.reduce((bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0), 0);
 	labelSumInterest.textContent = `${balInterest} €`;
 };
-
-calcDisplaySummary(account1.movements);
-
-// =====================================================================
-
-const createUsernames = function (accs) {
-	accs.forEach(acc => {
-		acc.username = acc.owner
-			.split(' ')
-			.map(str => str[0])
-			.join('')
-			.toLowerCase();
-	});
-};
-
-createUsernames(accounts);
-// console.log(account1);
