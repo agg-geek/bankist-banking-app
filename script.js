@@ -161,7 +161,11 @@ btnClose.addEventListener('click', function (evt) {
 
 		// findIndex returns -1 if the account is not found
 		// so splice will end up deleting the -1th elem, ie the last account
-		idx >= 0 && accounts.splice(idx, 1);
+		// but since we are first checking if the account to delete is the currentAccount
+		// so it'll definitely be found with idx >= 0
+		// idx >= 0 && accounts.splice(idx, 1); // is not required
+		accounts.splice(idx, 1);
+
 		currentAccount = undefined;
 
 		containerApp.style.opacity = 0;
