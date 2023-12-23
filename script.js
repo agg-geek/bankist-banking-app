@@ -150,6 +150,20 @@ btnTransfer.addEventListener('click', function (evt) {
 	inputTransferAmount.value = '';
 });
 
+// loan is sanctioned if there is any deposit with value >= 10% of requested loan amount
+btnLoan.addEventListener('click', function (evt) {
+	evt.preventDefault();
+
+	const amount = Number(inputLoanAmount.value);
+
+	if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+		currentAccount.movements.push(amount);
+		updateUI(currentAccount);
+	}
+	inputLoanAmount.value = '';
+	inputLoanAmount.blur();
+});
+
 btnClose.addEventListener('click', function (evt) {
 	evt.preventDefault();
 
