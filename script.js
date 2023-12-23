@@ -95,7 +95,7 @@ btnLogin.addEventListener('click', function (evt) {
 
 	// console.log('Clicked on button / Pressed Enter in input fields');
 	const username = inputLoginUsername.value;
-	const pin = inputLoginPin.value;
+	const pin = Number(inputLoginPin.value);
 
 	currentAccount = accounts.find(acc => acc.username === username);
 
