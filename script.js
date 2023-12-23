@@ -85,6 +85,8 @@ createUsernames(accounts);
 
 // store the currentAccount
 let currentAccount = undefined;
+// to display movements sorted or unsorted
+let sorted = false;
 
 // notice that the login stuff is a form
 // inputLoginUsername, inputLoginPin are form inputs
@@ -192,11 +194,26 @@ btnClose.addEventListener('click', function (evt) {
 	inputClosePin.blur();
 });
 
-const displayMovements = function (movements) {
+// see the sorted state variable at the top
+btnSort.addEventListener('click', function () {
+	// Solution 1
+	// displayMovements(currentAccount.movements, !sorted);
+	// sorted = !sorted;
+
+	// Solution 2
+	displayMovements(currentAccount.movements, (sorted ^= 1));
+});
+
+const displayMovements = function (movements, sort = false) {
 	// reset the container first
 	containerMovements.innerHTML = '';
 
-	movements.forEach(function (mov, i) {
+	// Notice that you first slice() the array to create a copy
+	// as sort will mutate the array itself
+	// and since arr is a reference value, don't mutate the original array in account obj
+	const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+	movs.forEach(function (mov, i) {
 		const type = mov > 0 ? 'deposit' : 'withdrawal';
 
 		const html = `
