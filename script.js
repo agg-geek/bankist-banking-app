@@ -113,11 +113,10 @@ btnLogin.addEventListener('click', function (evt) {
 		inputLoginPin.blur();
 
 		displayMovements(currentAccount.movements);
-		calcDisplayBalance(currentAccount.movements);
-
-		// we pass the movements array and interestRate value
-		// Jonas passed the complete currentAccount
-		calcDisplaySummary(currentAccount.movements, currentAccount.interestRate);
+		// as we add the account balance property to the obj itself
+		// we need the balance to be directly available for other things
+		calcDisplayBalance(currentAccount);
+		calcDisplaySummary(currentAccount);
 	}
 });
 
@@ -144,18 +143,19 @@ const displayMovements = function (movements) {
 
 // =====================================================================
 
-const calcDisplayBalance = function (movements) {
-	const balance = movements.reduce((bal, mov) => bal + mov, 0);
-	labelBalance.textContent = `${balance} €`;
+const calcDisplayBalance = function (acc) {
+	// add the balance property to the account obj itself
+	acc.balance = acc.movements.reduce((bal, mov) => bal + mov, 0);
+	labelBalance.textContent = `${acc.balance} €`;
 };
 
 // =====================================================================
 
-const calcDisplaySummary = function (movements, interestRate) {
-	const balIn = movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
+const calcDisplaySummary = function (acc) {
+	const balIn = acc.movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
 	labelSumIn.textContent = `${balIn} €`;
 
-	const balOut = movements.filter(mov => mov < 0).reduce((bal, mov) => bal + mov, 0);
+	const balOut = acc.movements.filter(mov => mov < 0).reduce((bal, mov) => bal + mov, 0);
 	labelSumOut.textContent = `${Math.abs(balOut)} €`;
 
 	// ===============================
@@ -163,7 +163,7 @@ const calcDisplaySummary = function (movements, interestRate) {
 	// assume 1.2% interest on each deposit
 
 	// const rate = interestRate / 100;
-	// const balInterest = movements
+	// const balInterest = acc.movements
 	// 	.filter(mov => mov > 0)
 	// 	.reduce((bal, mov) => bal + rate * mov, 0);
 	// labelSumInterest.textContent = `${balInterest} €`;
@@ -172,17 +172,17 @@ const calcDisplaySummary = function (movements, interestRate) {
 	// Interest assumption 2
 	// assume 1.2% interest on each deposit where minimum interest value is 1 €
 
-	const rate = interestRate / 100;
+	const rate = acc.interestRate / 100;
 
 	// Solution 1
-	// const balInterest = movements
+	// const balInterest = acc.movements
 	// 	.filter(mov => mov > 0)
 	// 	.map(mov => mov * rate)
 	// 	.filter(int => int >= 1)
 	// 	.reduce((acc, cur) => acc + cur, 0);
 
 	// Solution 2
-	const balInterest = movements
+	const balInterest = acc.movements
 		.filter(mov => mov > 0)
 		.reduce((bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0), 0);
 	labelSumInterest.textContent = `${balInterest} €`;
