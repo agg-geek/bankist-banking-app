@@ -42,7 +42,7 @@ const account1 = {
 	interestRate: 1.2,
 	pin: 1111,
 
-	movementsDates: [
+	movementDates: [
 		'2019-11-18T21:31:17.178Z',
 		'2019-12-23T07:42:02.383Z',
 		'2020-01-28T09:15:04.904Z',
@@ -62,7 +62,7 @@ const account2 = {
 	interestRate: 1.5,
 	pin: 2222,
 
-	movementsDates: [
+	movementDates: [
 		'2019-11-01T13:15:33.035Z',
 		'2019-11-30T09:48:16.867Z',
 		'2019-12-25T06:04:23.907Z',
@@ -117,6 +117,8 @@ const createUsernames = function (accs) {
 	});
 };
 
+createUsernames(accounts);
+
 const updateUI = function (acc) {
 	// showCurrentDate();
 	labelDate.textContent = formatDate(new Date().toISOString(), 1);
@@ -142,7 +144,6 @@ const formatDate = function (dateISOString, specifyHourMin = 0) {
 	return `${day}/${month}/${year}`;
 };
 
-createUsernames(accounts);
 // console.log(account1);
 
 // store the currentAccount
@@ -205,10 +206,10 @@ btnTransfer.addEventListener('click', function (evt) {
 		// console.log('Transfer successful.');
 
 		currentAccount.movements.push(-amount);
-		currentAccount.movementsDates.push(new Date().toISOString());
+		currentAccount.movementDates.push(new Date().toISOString());
 
 		receiverAccount.movements.push(amount);
-		receiverAccount.movementsDates.push(new Date().toISOString());
+		receiverAccount.movementDates.push(new Date().toISOString());
 
 		updateUI(currentAccount);
 	}
@@ -229,7 +230,7 @@ btnLoan.addEventListener('click', function (evt) {
 
 	if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
 		currentAccount.movements.push(amount);
-		currentAccount.movementsDates.push(new Date().toISOString());
+		currentAccount.movementDates.push(new Date().toISOString());
 		updateUI(currentAccount);
 	}
 	inputLoanAmount.value = '';
@@ -285,7 +286,8 @@ const displayMovements = function (acc, sort = false) {
 
 	movs.forEach(function (mov, i) {
 		const type = mov > 0 ? 'deposit' : 'withdrawal';
-		const movDate = acc.movementsDates[i];
+
+		const movDate = acc.movementDates[i];
 		const movDateFormatted = formatDate(movDate);
 
 		const html = `
