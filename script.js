@@ -205,7 +205,10 @@ btnTransfer.addEventListener('click', function (evt) {
 		// console.log('Transfer successful.');
 
 		currentAccount.movements.push(-amount);
+		currentAccount.movementsDates.push(new Date().toISOString());
+
 		receiverAccount.movements.push(amount);
+		receiverAccount.movementsDates.push(new Date().toISOString());
 
 		updateUI(currentAccount);
 	}
@@ -226,6 +229,7 @@ btnLoan.addEventListener('click', function (evt) {
 
 	if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
 		currentAccount.movements.push(amount);
+		currentAccount.movementsDates.push(new Date().toISOString());
 		updateUI(currentAccount);
 	}
 	inputLoanAmount.value = '';
