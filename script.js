@@ -202,10 +202,10 @@ btnTransfer.addEventListener('click', function (evt) {
 		amount < currentAccount.balance &&
 		currentAccount.owner !== receiverAccount.owner
 	) {
-		console.log('Transfer successful.');
+		// console.log('Transfer successful.');
 
 		currentAccount.movements.push(-amount);
-		transferAccount.movements.push(amount);
+		receiverAccount.movements.push(amount);
 
 		updateUI(currentAccount);
 	}
