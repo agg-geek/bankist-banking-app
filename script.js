@@ -42,16 +42,7 @@ const account1 = {
 	interestRate: 1.2,
 	pin: 1111,
 
-	movementDates: [
-		'2019-11-18T21:31:17.178Z',
-		'2019-12-23T07:42:02.383Z',
-		'2020-01-28T09:15:04.904Z',
-		'2020-04-01T10:17:24.185Z',
-		'2020-05-08T14:11:59.604Z',
-		'2020-07-26T17:01:17.194Z',
-		'2020-07-28T23:36:17.929Z',
-		'2020-08-01T10:51:36.790Z',
-	],
+	movementDates: [],
 	currency: 'EUR',
 	locale: 'pt-PT', // de-DE
 };
@@ -62,16 +53,7 @@ const account2 = {
 	interestRate: 1.5,
 	pin: 2222,
 
-	movementDates: [
-		'2019-11-01T13:15:33.035Z',
-		'2019-11-30T09:48:16.867Z',
-		'2019-12-25T06:04:23.907Z',
-		'2020-01-25T14:18:46.235Z',
-		'2020-02-05T16:33:06.386Z',
-		'2020-04-10T14:43:26.374Z',
-		'2020-06-25T18:49:59.371Z',
-		'2020-07-26T12:01:20.894Z',
-	],
+	movementDates: [],
 	currency: 'USD',
 	locale: 'en-US',
 };
@@ -118,6 +100,25 @@ const createUsernames = function (accs) {
 };
 
 createUsernames(accounts);
+
+// generate movement dates based on current date
+const addMovementDates = function () {
+	const differenceDates = function (dates) {
+		return dates.map(date => {
+			const newDate = new Date();
+			newDate.setDate(newDate.getDate() - date);
+			return newDate.toISOString();
+		});
+	};
+
+	const differenceDates1 = [96, 67, 42, 25, 10, 5, 2, 1];
+	const differenceDates2 = [121, 82, 56, 36, 7, 4, 3, 2];
+
+	account1.movementDates = differenceDates(differenceDates1);
+	account2.movementDates = differenceDates(differenceDates2);
+};
+
+addMovementDates();
 
 const updateUI = function (acc) {
 	// showCurrentDate();
