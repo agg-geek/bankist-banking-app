@@ -267,7 +267,7 @@ btnSort.addEventListener('click', function () {
 	// sorted = !sorted;
 
 	// Solution 2
-	displayMovements(currentAccount.movements, (sorted ^= 1));
+	displayMovements(currentAccount, (sorted ^= 1));
 });
 
 const displayMovements = function (acc, sort = false) {
