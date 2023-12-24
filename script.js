@@ -270,18 +270,6 @@ btnSort.addEventListener('click', function () {
 	displayMovements(currentAccount.movements, (sorted ^= 1));
 });
 
-const showCurrentDate = function () {
-	const now = new Date();
-	// padStart so that date is 02 instead of 2
-	const day = `${now.getDate()}`.padStart(2, 0);
-	const month = `${now.getMonth() + 1}`.padStart(2, 0);
-	const year = now.getFullYear();
-	const hour = `${now.getHours()}`.padStart(2, 0);
-	const min = `${now.getMinutes()}`.padStart(2, 0);
-
-	labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-};
-
 const displayMovements = function (movements, sort = false) {
 	// reset the container first
 	containerMovements.innerHTML = '';
