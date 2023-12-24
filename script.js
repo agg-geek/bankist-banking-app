@@ -201,7 +201,11 @@ btnTransfer.addEventListener('click', function (evt) {
 btnLoan.addEventListener('click', function (evt) {
 	evt.preventDefault();
 
-	const amount = Number(inputLoanAmount.value);
+	// we used a floored value of the requested loan
+	// const amount = Math.floor(Number(inputLoanAmount.value));
+
+	// Math.floor automatically performs type coercion to number
+	const amount = Math.floor(inputLoanAmount.value);
 
 	if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
 		currentAccount.movements.push(amount);
