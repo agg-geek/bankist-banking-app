@@ -118,12 +118,28 @@ const createUsernames = function (accs) {
 };
 
 const updateUI = function (acc) {
-	showCurrentDate();
+	// showCurrentDate();
+	labelDate.textContent = formatDate(new Date().toISOString(), 1);
+
 	displayMovements(acc.movements);
 	// as we add the account balance property to the obj itself
 	// we need the balance to be directly available for other things
 	calcDisplayBalance(acc);
 	calcDisplaySummary(acc);
+};
+
+const formatDate = function (dateISOString, specifyHourMin = 0) {
+	const date = new Date(dateISOString);
+
+	// padStart so that date is 02 instead of 2
+	const day = `${date.getDate()}`.padStart(2, 0);
+	const month = `${date.getMonth() + 1}`.padStart(2, 0);
+	const year = date.getFullYear();
+	const hour = `${date.getHours()}`.padStart(2, 0);
+	const min = `${date.getMinutes()}`.padStart(2, 0);
+
+	if (specifyHourMin) return `${day}/${month}/${year}, ${hour}:${min}`;
+	return `${day}/${month}/${year}`;
 };
 
 createUsernames(accounts);
