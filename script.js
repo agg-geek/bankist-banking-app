@@ -121,7 +121,7 @@ const updateUI = function (acc) {
 	// showCurrentDate();
 	labelDate.textContent = formatDate(new Date().toISOString(), 1);
 
-	displayMovements(acc.movements);
+	displayMovements(acc);
 	// as we add the account balance property to the obj itself
 	// we need the balance to be directly available for other things
 	calcDisplayBalance(acc);
@@ -270,22 +270,24 @@ btnSort.addEventListener('click', function () {
 	displayMovements(currentAccount.movements, (sorted ^= 1));
 });
 
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (acc, sort = false) {
 	// reset the container first
 	containerMovements.innerHTML = '';
 
 	// Notice that you first slice() the array to create a copy
 	// as sort will mutate the array itself
 	// and since arr is a reference value, don't mutate the original array in account obj
-	const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+	const movs = sort ? acc.movements.slice().sort((a, b) => a - b) : acc.movements;
 
 	movs.forEach(function (mov, i) {
 		const type = mov > 0 ? 'deposit' : 'withdrawal';
+		const movDate = acc.movementsDates[i];
+		const movDateFormatted = formatDate(movDate);
 
 		const html = `
         <div class="movements__row">
             <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-            <!-- <div class="movements__date">3 days ago</div> -->
+            <div class="movements__date">${movDateFormatted}</div>
             <div class="movements__value">${mov.toFixed(2)} €</div>
         </div>`;
 
