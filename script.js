@@ -111,8 +111,8 @@ const addMovementDates = function () {
 		});
 	};
 
-	const differenceDates1 = [96, 67, 42, 25, 10, 5, 2, 1];
-	const differenceDates2 = [121, 82, 56, 36, 7, 4, 3, 2];
+	const differenceDates1 = [96, 67, 42, 25, 10, 5, 1, 0];
+	const differenceDates2 = [121, 82, 56, 36, 7, 4, 3, 1];
 
 	account1.movementDates = differenceDates(differenceDates1);
 	account2.movementDates = differenceDates(differenceDates2);
@@ -131,7 +131,7 @@ const updateUI = function (acc) {
 	calcDisplaySummary(acc);
 };
 
-const formatDate = function (dateISOString, specifyHourMin = 0) {
+const formatDate = function (dateISOString, specifyHourMin = 0, relativeDate = 0) {
 	const date = new Date(dateISOString);
 
 	// padStart so that date is 02 instead of 2
@@ -141,11 +141,18 @@ const formatDate = function (dateISOString, specifyHourMin = 0) {
 	const hour = `${date.getHours()}`.padStart(2, 0);
 	const min = `${date.getMinutes()}`.padStart(2, 0);
 
+	if (relativeDate) {
+		const diffDays = (date1, date2) =>
+			Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
+
+		const currDiffDays = diffDays(new Date(), date);
+		if (currDiffDays == 0) return 'Today';
+		else if (currDiffDays == 1) return 'Yesterday';
+	}
+
 	if (specifyHourMin) return `${day}/${month}/${year}, ${hour}:${min}`;
 	return `${day}/${month}/${year}`;
 };
-
-// console.log(account1);
 
 // store the currentAccount
 let currentAccount = undefined;
@@ -289,7 +296,7 @@ const displayMovements = function (acc, sort = false) {
 		const type = mov > 0 ? 'deposit' : 'withdrawal';
 
 		const movDate = acc.movementDates[i];
-		const movDateFormatted = formatDate(movDate);
+		const movDateFormatted = formatDate(movDate, 0, 1);
 
 		const html = `
         <div class="movements__row">
