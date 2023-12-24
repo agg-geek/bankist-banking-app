@@ -265,7 +265,7 @@ const displayMovements = function (movements, sort = false) {
         <div class="movements__row">
             <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
             <!-- <div class="movements__date">3 days ago</div> -->
-            <div class="movements__value">${mov} €</div>
+            <div class="movements__value">${mov.toFixed(2)} €</div>
         </div>`;
 
 		// notice insertAdjacentHTML and not insertAdjacentElement
@@ -276,15 +276,15 @@ const displayMovements = function (movements, sort = false) {
 const calcDisplayBalance = function (acc) {
 	// add the balance property to the account obj itself
 	acc.balance = acc.movements.reduce((bal, mov) => bal + mov, 0);
-	labelBalance.textContent = `${acc.balance} €`;
+	labelBalance.textContent = `${acc.balance.toFixed(2)} €`;
 };
 
 const calcDisplaySummary = function (acc) {
 	const balIn = acc.movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
-	labelSumIn.textContent = `${balIn} €`;
+	labelSumIn.textContent = `${balIn.toFixed(2)} €`;
 
 	const balOut = acc.movements.filter(mov => mov < 0).reduce((bal, mov) => bal + mov, 0);
-	labelSumOut.textContent = `${Math.abs(balOut)} €`;
+	labelSumOut.textContent = `${Math.abs(balOut.toFixed(2))} €`;
 
 	// ===============================
 	// Interest assumption 1
@@ -313,5 +313,5 @@ const calcDisplaySummary = function (acc) {
 	const balInterest = acc.movements
 		.filter(mov => mov > 0)
 		.reduce((bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0), 0);
-	labelSumInterest.textContent = `${balInterest} €`;
+	labelSumInterest.textContent = `${balInterest.toFixed(2)} €`;
 };
