@@ -92,6 +92,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 let currentAccount = undefined;
 let sorted = false;
+let timer; // notice why timer needs to be defined globally
 
 const createUsernames = function (accs) {
 	accs.forEach(acc => {
@@ -123,8 +124,12 @@ const addMovementDates = function () {
 
 addMovementDates();
 
+// set the timer to 30 secs
+// login as js and then after 5 secs, login as jd
+// 2 timers will exist causing the labelTimer to flicker between the two timers
+// so clear the previous timer on login, if it exists
 const setTimer = function () {
-	let time = 10;
+	let time = 30;
 
 	const tick = function () {
 		const min = String(Math.floor(time / 60)).padStart(2, '0');
@@ -138,18 +143,19 @@ const setTimer = function () {
 			containerApp.style.opacity = 0;
 		}
 
-		// we were logged out at 1 sec because of incorrect position of time--
 		time--;
 	};
 
 	tick();
 	const timer = setInterval(tick, 1000);
+	return timer;
 };
 
 const updateUI = function (acc) {
 	labelDate.textContent = formatDate(new Date().toISOString(), 1);
 
-	setTimer();
+	if (timer) clearInterval(timer);
+	timer = setTimer();
 	displayMovements(acc);
 	calcDisplayBalance(acc);
 	calcDisplaySummary(acc);
