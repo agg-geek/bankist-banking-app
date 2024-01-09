@@ -134,24 +134,23 @@ const updateUI = function (acc) {
 const formatDate = function (dateISOString, specifyHourMin = 0, relativeDate = 0) {
 	const date = new Date(dateISOString);
 
-	// padStart so that date is 02 instead of 2
-	const day = `${date.getDate()}`.padStart(2, 0);
-	const month = `${date.getMonth() + 1}`.padStart(2, 0);
-	const year = date.getFullYear();
-	const hour = `${date.getHours()}`.padStart(2, 0);
-	const min = `${date.getMinutes()}`.padStart(2, 0);
+	const options = {
+		day: 'numeric',
+		month: 'numeric',
+		year: 'numeric',
+		...(specifyHourMin && { hour: 'numeric', minute: 'numeric' }),
+	};
 
-	if (relativeDate) {
-		const diffDays = (date1, date2) =>
-			Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
+	return new Intl.DateTimeFormat('en-GB', options).format(date);
 
-		const currDiffDays = diffDays(new Date(), date);
-		if (currDiffDays == 0) return 'Today';
-		else if (currDiffDays == 1) return 'Yesterday';
-	}
+	// if (relativeDate) {
+	// 	const diffDays = (date1, date2) =>
+	// 		Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
 
-	if (specifyHourMin) return `${day}/${month}/${year}, ${hour}:${min}`;
-	return `${day}/${month}/${year}`;
+	// 	const currDiffDays = diffDays(new Date(), date);
+	// 	if (currDiffDays == 0) return 'Today';
+	// 	else if (currDiffDays == 1) return 'Yesterday';
+	// }
 };
 
 // store the currentAccount
@@ -248,10 +247,7 @@ btnLoan.addEventListener('click', function (evt) {
 btnClose.addEventListener('click', function (evt) {
 	evt.preventDefault();
 
-	if (
-		inputCloseUsername.value === currentAccount.username &&
-		Number(inputClosePin.value) === currentAccount.pin
-	) {
+	if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
 		const idx = accounts.findIndex(acc => acc.username === currentAccount.username);
 
 		// findIndex returns -1 if the account is not found
