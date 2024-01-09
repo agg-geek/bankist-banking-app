@@ -151,6 +151,8 @@ const setTimer = function () {
 	return timer;
 };
 
+// notice that you call the updateUI fn when you change transfer or request loan
+// this is required so that you don't get logged out when you're actively doing transactions
 const updateUI = function (acc) {
 	labelDate.textContent = formatDate(new Date().toISOString(), 1);
 
