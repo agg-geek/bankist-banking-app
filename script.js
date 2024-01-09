@@ -43,9 +43,9 @@ const account1 = {
 	pin: 1111,
 
 	movementDates: [],
-	currency: 'EUR',
-	// locale: 'en-IN',
-	locale: 'en-GB',
+	currency: 'INR',
+	locale: 'en-IN',
+	// locale: 'en-GB',
 };
 
 const account2 = {
@@ -155,6 +155,13 @@ const formatDate = function (dateISOString, specifyHourMin = 0, relativeDate = 0
 		...(specifyHourMin && { hour: 'numeric', minute: 'numeric' }),
 	};
 	return new Intl.DateTimeFormat(currentAccount.locale, options).format(date);
+};
+
+const formatCurrency = function (value) {
+	return new Intl.NumberFormat(currentAccount.locale, {
+		style: 'currency',
+		currency: currentAccount.currency,
+	}).format(value);
 };
 
 // notice that the login stuff is a form
@@ -290,14 +297,11 @@ const displayMovements = function (acc, sort = false) {
 	movs.forEach(function (mov, i) {
 		const type = mov > 0 ? 'deposit' : 'withdrawal';
 
-		const movDate = acc.movementDates[i];
-		const movDateFormatted = formatDate(movDate, 0, 1);
-
 		const html = `
         <div class="movements__row">
             <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-            <div class="movements__date">${movDateFormatted}</div>
-            <div class="movements__value">${mov.toFixed(2)} €</div>
+            <div class="movements__date">${formatDate(acc.movementDates[i], 0, 1)}</div>
+            <div class="movements__value">${formatCurrency(mov)}</div>
         </div>`;
 
 		// notice insertAdjacentHTML and not insertAdjacentElement
@@ -308,15 +312,15 @@ const displayMovements = function (acc, sort = false) {
 const calcDisplayBalance = function (acc) {
 	// add the balance property to the account obj itself
 	acc.balance = acc.movements.reduce((bal, mov) => bal + mov, 0);
-	labelBalance.textContent = `${acc.balance.toFixed(2)} €`;
+	labelBalance.textContent = `${formatCurrency(acc.balance)}`;
 };
 
 const calcDisplaySummary = function (acc) {
 	const balIn = acc.movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
-	labelSumIn.textContent = `${balIn.toFixed(2)} €`;
+	labelSumIn.textContent = `${formatCurrency(balIn)}`;
 
 	const balOut = acc.movements.filter(mov => mov < 0).reduce((bal, mov) => bal + mov, 0);
-	labelSumOut.textContent = `${Math.abs(balOut.toFixed(2))} €`;
+	labelSumOut.textContent = `${formatCurrency(Math.abs(balOut))}`;
 
 	// ===============================
 	// Interest assumption 1
@@ -345,5 +349,5 @@ const calcDisplaySummary = function (acc) {
 	const balInterest = acc.movements
 		.filter(mov => mov > 0)
 		.reduce((bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0), 0);
-	labelSumInterest.textContent = `${balInterest.toFixed(2)} €`;
+	labelSumInterest.textContent = `${formatCurrency(balInterest)}`;
 };
