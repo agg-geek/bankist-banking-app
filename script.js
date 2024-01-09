@@ -126,7 +126,7 @@ addMovementDates();
 const setTimer = function () {
 	let time = 10;
 
-	const tick = () => {
+	const tick = function () {
 		const min = String(Math.floor(time / 60)).padStart(2, '0');
 		const sec = String(time % 60).padStart(2, '0');
 		labelTimer.textContent = `${min}:${sec}`;
@@ -134,6 +134,7 @@ const setTimer = function () {
 		time--;
 
 		if (time === 0) {
+			clearInterval(timer);
 			currentAccount = undefined;
 			labelWelcome.textContent = 'Log in to get started';
 			containerApp.style.opacity = 0;
@@ -141,7 +142,7 @@ const setTimer = function () {
 	};
 
 	tick();
-	setInterval(tick, 1000);
+	const timer = setInterval(tick, 1000);
 };
 
 const updateUI = function (acc) {
