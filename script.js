@@ -131,14 +131,15 @@ const setTimer = function () {
 		const sec = String(time % 60).padStart(2, '0');
 		labelTimer.textContent = `${min}:${sec}`;
 
-		time--;
-
 		if (time === 0) {
 			clearInterval(timer);
 			currentAccount = undefined;
 			labelWelcome.textContent = 'Log in to get started';
 			containerApp.style.opacity = 0;
 		}
+
+		// we were logged out at 1 sec because of incorrect position of time--
+		time--;
 	};
 
 	tick();
