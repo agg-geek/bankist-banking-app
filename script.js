@@ -44,7 +44,8 @@ const account1 = {
 
 	movementDates: [],
 	currency: 'EUR',
-	locale: 'pt-PT', // de-DE
+	// locale: 'en-IN',
+	locale: 'en-GB',
 };
 
 const account2 = {
@@ -88,6 +89,11 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // =====================================================================
+
+// store the currentAccount
+let currentAccount = undefined;
+// to display movements sorted or unsorted
+let sorted = false;
 
 const createUsernames = function (accs) {
 	accs.forEach(acc => {
@@ -141,7 +147,7 @@ const formatDate = function (dateISOString, specifyHourMin = 0, relativeDate = 0
 		...(specifyHourMin && { hour: 'numeric', minute: 'numeric' }),
 	};
 
-	return new Intl.DateTimeFormat('en-GB', options).format(date);
+	return new Intl.DateTimeFormat(currentAccount.locale, options).format(date);
 
 	// if (relativeDate) {
 	// 	const diffDays = (date1, date2) =>
@@ -152,11 +158,6 @@ const formatDate = function (dateISOString, specifyHourMin = 0, relativeDate = 0
 	// 	else if (currDiffDays == 1) return 'Yesterday';
 	// }
 };
-
-// store the currentAccount
-let currentAccount = undefined;
-// to display movements sorted or unsorted
-let sorted = false;
 
 // notice that the login stuff is a form
 // inputLoginUsername, inputLoginPin are form inputs
