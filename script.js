@@ -140,23 +140,21 @@ const updateUI = function (acc) {
 const formatDate = function (dateISOString, specifyHourMin = 0, relativeDate = 0) {
 	const date = new Date(dateISOString);
 
+	if (relativeDate) {
+		const diffDays = (date1, date2) => Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
+		const daysPassed = diffDays(date, new Date());
+		if (daysPassed == 0) return 'Today';
+		else if (daysPassed == 1) return 'Yesterday';
+		else if (daysPassed < 7) return `${daysPassed} days ago`;
+	}
+
 	const options = {
 		day: 'numeric',
 		month: 'numeric',
 		year: 'numeric',
 		...(specifyHourMin && { hour: 'numeric', minute: 'numeric' }),
 	};
-
 	return new Intl.DateTimeFormat(currentAccount.locale, options).format(date);
-
-	// if (relativeDate) {
-	// 	const diffDays = (date1, date2) =>
-	// 		Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
-
-	// 	const currDiffDays = diffDays(new Date(), date);
-	// 	if (currDiffDays == 0) return 'Today';
-	// 	else if (currDiffDays == 1) return 'Yesterday';
-	// }
 };
 
 // notice that the login stuff is a form
