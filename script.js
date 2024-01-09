@@ -90,9 +90,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 // =====================================================================
 
-// store the currentAccount
 let currentAccount = undefined;
-// to display movements sorted or unsorted
 let sorted = false;
 
 const createUsernames = function (accs) {
@@ -107,7 +105,6 @@ const createUsernames = function (accs) {
 
 createUsernames(accounts);
 
-// generate movement dates based on current date
 const addMovementDates = function () {
 	const differenceDates = function (dates) {
 		return dates.map(date => {
@@ -127,12 +124,9 @@ const addMovementDates = function () {
 addMovementDates();
 
 const updateUI = function (acc) {
-	// showCurrentDate();
 	labelDate.textContent = formatDate(new Date().toISOString(), 1);
 
 	displayMovements(acc);
-	// as we add the account balance property to the obj itself
-	// we need the balance to be directly available for other things
 	calcDisplayBalance(acc);
 	calcDisplaySummary(acc);
 };
@@ -164,26 +158,14 @@ const formatCurrency = function (value) {
 	}).format(value);
 };
 
-// notice that the login stuff is a form
-// inputLoginUsername, inputLoginPin are form inputs
-// btnLogin is the submit button of the form
-// whenever you click on the button, the form is submitted
-// the form also gets submitted when you press Enter
-// when any form input is active
-// you will see the below console.log() when you do any of the above
-// as all above inputs call below event listener
-// even though it is applied on just btnLogin
 btnLogin.addEventListener('click', function (evt) {
-	// To prevent submission of form which refreshes the page
 	evt.preventDefault();
 
-	// console.log('Clicked on button / Pressed Enter in input fields');
 	const username = inputLoginUsername.value;
 	const pin = Number(inputLoginPin.value);
 
 	currentAccount = accounts.find(acc => acc.username === username);
 
-	// notice ?.
 	if (currentAccount?.pin == pin) {
 		labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
 		containerApp.style.opacity = 100;
@@ -191,8 +173,6 @@ btnLogin.addEventListener('click', function (evt) {
 		inputLoginUsername.value = '';
 		inputLoginPin.value = '';
 
-		// if we login via Enter after entering the username, pin
-		// then the focus and the cursor stays on the input fields
 		inputLoginUsername.blur();
 		inputLoginPin.blur();
 
@@ -206,18 +186,12 @@ btnTransfer.addEventListener('click', function (evt) {
 	const amount = Number(inputTransferAmount.value);
 	const receiverAccount = accounts.find(acc => acc.username === inputTransferTo.value);
 
-	// notice that we first check if the receiverAccount exists
-	// we cannot use ?. because
-	// for currentAccount.owner !== receiverAccount?.owner
-	// if receiverAccount does not exist, (currentAccount.owner !== undefined) is true
 	if (
 		receiverAccount &&
 		amount > 0 &&
 		amount < currentAccount.balance &&
 		currentAccount.owner !== receiverAccount.owner
 	) {
-		// console.log('Transfer successful.');
-
 		currentAccount.movements.push(-amount);
 		currentAccount.movementDates.push(new Date().toISOString());
 
@@ -231,14 +205,9 @@ btnTransfer.addEventListener('click', function (evt) {
 	inputTransferAmount.value = '';
 });
 
-// loan is sanctioned if there is any deposit with value >= 10% of requested loan amount
 btnLoan.addEventListener('click', function (evt) {
 	evt.preventDefault();
 
-	// we used a floored value of the requested loan
-	// const amount = Math.floor(Number(inputLoanAmount.value));
-
-	// Math.floor automatically performs type coercion to number
 	const amount = Math.floor(inputLoanAmount.value);
 
 	if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
@@ -256,11 +225,6 @@ btnClose.addEventListener('click', function (evt) {
 	if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
 		const idx = accounts.findIndex(acc => acc.username === currentAccount.username);
 
-		// findIndex returns -1 if the account is not found
-		// so splice will end up deleting the -1th elem, ie the last account
-		// but since we are first checking if the account to delete is the currentAccount
-		// so it'll definitely be found with idx >= 0
-		// idx >= 0 && accounts.splice(idx, 1); // is not required
 		accounts.splice(idx, 1);
 
 		currentAccount = undefined;
@@ -275,25 +239,14 @@ btnClose.addEventListener('click', function (evt) {
 	inputClosePin.blur();
 });
 
-// see the sorted state variable at the top
 btnSort.addEventListener('click', function () {
-	// Solution 1
-	// displayMovements(currentAccount.movements, !sorted);
-	// sorted = !sorted;
-
-	// Solution 2
 	displayMovements(currentAccount, (sorted ^= 1));
 });
 
 const displayMovements = function (acc, sort = false) {
-	// reset the container first
 	containerMovements.innerHTML = '';
 
-	// Notice that you first slice() the array to create a copy
-	// as sort will mutate the array itself
-	// and since arr is a reference value, don't mutate the original array in account obj
 	const movs = sort ? acc.movements.slice().sort((a, b) => a - b) : acc.movements;
-
 	movs.forEach(function (mov, i) {
 		const type = mov > 0 ? 'deposit' : 'withdrawal';
 
@@ -304,13 +257,11 @@ const displayMovements = function (acc, sort = false) {
             <div class="movements__value">${formatCurrency(mov)}</div>
         </div>`;
 
-		// notice insertAdjacentHTML and not insertAdjacentElement
 		containerMovements.insertAdjacentHTML('afterbegin', html);
 	});
 };
 
 const calcDisplayBalance = function (acc) {
-	// add the balance property to the account obj itself
 	acc.balance = acc.movements.reduce((bal, mov) => bal + mov, 0);
 	labelBalance.textContent = `${formatCurrency(acc.balance)}`;
 };
@@ -322,30 +273,8 @@ const calcDisplaySummary = function (acc) {
 	const balOut = acc.movements.filter(mov => mov < 0).reduce((bal, mov) => bal + mov, 0);
 	labelSumOut.textContent = `${formatCurrency(Math.abs(balOut))}`;
 
-	// ===============================
-	// Interest assumption 1
-	// assume 1.2% interest on each deposit
-
-	// const rate = interestRate / 100;
-	// const balInterest = acc.movements
-	// 	.filter(mov => mov > 0)
-	// 	.reduce((bal, mov) => bal + rate * mov, 0);
-	// labelSumInterest.textContent = `${balInterest} €`;
-
-	// ===============================
-	// Interest assumption 2
-	// assume 1.2% interest on each deposit where minimum interest value is 1 €
-
 	const rate = acc.interestRate / 100;
 
-	// Solution 1
-	// const balInterest = acc.movements
-	// 	.filter(mov => mov > 0)
-	// 	.map(mov => mov * rate)
-	// 	.filter(int => int >= 1)
-	// 	.reduce((acc, cur) => acc + cur, 0);
-
-	// Solution 2
 	const balInterest = acc.movements
 		.filter(mov => mov > 0)
 		.reduce((bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0), 0);
