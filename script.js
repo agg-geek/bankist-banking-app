@@ -123,9 +123,22 @@ const addMovementDates = function () {
 
 addMovementDates();
 
+const setTimer = function () {
+	let time = 100;
+
+	setInterval(() => {
+		const min = String(Math.floor(time / 60)).padStart(2, '0');
+		const sec = String(time % 60).padStart(2, '0');
+		labelTimer.textContent = `${min}:${sec}`;
+
+		time--;
+	}, 1000);
+};
+
 const updateUI = function (acc) {
 	labelDate.textContent = formatDate(new Date().toISOString(), 1);
 
+	setTimer();
 	displayMovements(acc);
 	calcDisplayBalance(acc);
 	calcDisplaySummary(acc);
