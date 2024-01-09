@@ -126,13 +126,20 @@ addMovementDates();
 const setTimer = function () {
 	let time = 100;
 
-	setInterval(() => {
+	const tick = () => {
 		const min = String(Math.floor(time / 60)).padStart(2, '0');
 		const sec = String(time % 60).padStart(2, '0');
 		labelTimer.textContent = `${min}:${sec}`;
 
 		time--;
-	}, 1000);
+	};
+
+	// the timer was shown after 1 sec passed after login
+	// but during the first 1 sec, the labelTimer showed the default HTML 05:00
+	// so fix it by first calling the fn (so it works for the first 1 sec)
+	// and then add the interval
+	tick();
+	setInterval(tick, 1000);
 };
 
 const updateUI = function (acc) {
