@@ -1,24 +1,9 @@
-# Jonas JS Bankist: Banking App
-
-## Learning goal
-
--   Array methods
--   Numbers
--   Dates
--   Intl.
--   Timers
-
-## Section
-
-Section 11, 12
+# Bankist: Banking App
 
 ## Links
 
-<!-- -   [Live Demo]() -->
+-   [Live Demo](https://agg-geek.github.io/bankist-banking-app/)
 
 ## To-do
-
--   Implement Intl.
--   Implement timer
 
 ## Issues
