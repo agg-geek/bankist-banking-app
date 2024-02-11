@@ -1,43 +1,7 @@
-// BANKIST APP
 'use strict';
 
-// =====================================================================
-// Old data
-// const account1 = {
-// 	owner: 'Jonas Schmedtmann',
-// 	movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-// 	interestRate: 1.2,
-// 	pin: 1111,
-// };
-
-// const account2 = {
-// 	owner: 'Jessica Davis',
-// 	movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-// 	interestRate: 1.5,
-// 	pin: 2222,
-// };
-
-// const account3 = {
-// 	owner: 'Steven Thomas Williams',
-// 	movements: [200, -200, 340, -300, -20, 50, 400, -460],
-// 	interestRate: 0.7,
-// 	pin: 3333,
-// };
-
-// const account4 = {
-// 	owner: 'Sarah Smith',
-// 	movements: [430, 1000, 700, 50, 90],
-// 	interestRate: 1,
-// 	pin: 4444,
-// };
-
-// const accounts = [account1, account2, account3, account4];
-
-// =====================================================================
-// New data
-
 const account1 = {
-	owner: 'Jonas Schmedtmann',
+	owner: 'Abhinav Aggarwal',
 	movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
 	interestRate: 1.2,
 	pin: 1111,
@@ -49,7 +13,7 @@ const account1 = {
 };
 
 const account2 = {
-	owner: 'Jessica Davis',
+	owner: 'John Doe',
 	movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
 	interestRate: 1.5,
 	pin: 2222,
@@ -61,8 +25,6 @@ const account2 = {
 
 const accounts = [account1, account2];
 
-// =====================================================================
-// Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -88,11 +50,9 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-// =====================================================================
-
 let currentAccount = undefined;
 let sorted = false;
-let timer; // notice why timer needs to be defined globally
+let timer;
 
 const createUsernames = function (accs) {
 	accs.forEach(acc => {
@@ -124,10 +84,6 @@ const addMovementDates = function () {
 
 addMovementDates();
 
-// set the timer to 30 secs
-// login as js and then after 5 secs, login as jd
-// 2 timers will exist causing the labelTimer to flicker between the two timers
-// so clear the previous timer on login, if it exists
 const setTimer = function () {
 	let time = 30;
 
@@ -151,8 +107,6 @@ const setTimer = function () {
 	return timer;
 };
 
-// notice that you call the updateUI fn when you change transfer or request loan
-// this is required so that you don't get logged out when you're actively doing transactions
 const updateUI = function (acc) {
 	labelDate.textContent = formatDate(new Date().toISOString(), 1);
 
@@ -167,7 +121,8 @@ const formatDate = function (dateISOString, specifyHourMin = 0, relativeDate = 0
 	const date = new Date(dateISOString);
 
 	if (relativeDate) {
-		const diffDays = (date1, date2) => Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
+		const diffDays = (date1, date2) =>
+			Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
 		const daysPassed = diffDays(date, new Date());
 		if (daysPassed == 0) return 'Today';
 		else if (daysPassed == 1) return 'Yesterday';
@@ -254,7 +209,10 @@ btnLoan.addEventListener('click', function (evt) {
 btnClose.addEventListener('click', function (evt) {
 	evt.preventDefault();
 
-	if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
+	if (
+		inputCloseUsername.value === currentAccount.username &&
+		Number(inputClosePin.value) === currentAccount.pin
+	) {
 		const idx = accounts.findIndex(acc => acc.username === currentAccount.username);
 
 		accounts.splice(idx, 1);
@@ -299,16 +257,17 @@ const calcDisplayBalance = function (acc) {
 };
 
 const calcDisplaySummary = function (acc) {
-	const balIn = acc.movements.filter(mov => mov > 0).reduce((bal, mov) => bal + mov, 0);
+	const balIn = acc.movements.reduce((bal, mov) => bal + (mov > 0 ? mov : 0), 0);
 	labelSumIn.textContent = `${formatCurrency(balIn)}`;
 
-	const balOut = acc.movements.filter(mov => mov < 0).reduce((bal, mov) => bal + mov, 0);
+	const balOut = acc.movements.reduce((bal, mov) => bal + (mov < 0 ? mov : 0), 0);
 	labelSumOut.textContent = `${formatCurrency(Math.abs(balOut))}`;
 
 	const rate = acc.interestRate / 100;
 
-	const balInterest = acc.movements
-		.filter(mov => mov > 0)
-		.reduce((bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0), 0);
+	const balInterest = acc.movements.reduce(
+		(bal, mov) => bal + (mov * rate >= 1 ? mov * rate : 0),
+		0
+	);
 	labelSumInterest.textContent = `${formatCurrency(balInterest)}`;
 };
